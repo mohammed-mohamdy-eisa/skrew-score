@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skrew</title>
+    <link rel="stylesheet" href="../cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@900&amp;display=swap" rel="stylesheet">
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            background-image: url('bg.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+
+        nav {
+            position: absolute;
+            top: 20px;
+            background-color: rgba(64, 13, 81, 0.8);
+            padding: 5px 10px;
+            border-radius: 50px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #FFFFFF;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 30px;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            color: #D6A3FF;
+        }
+
+        h1 {
+            color: #400D51;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .box {
+            background-color: #D6A3FF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #883997;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #D6A3FF;
+            color: #4B0082;
+            font-family: 'Cairo', sans-serif;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a href="rules.html">القواعد</a></li>
+            <li><a href="#" class="instagram-link">الحسابات</a></li>
+            <li><a href="suggestions.html">الاقتراحات</a></li>
+        </ul>
+    </nav>
+
+    <div class="box">
+        <h1>كم عدد اللاعبين؟</h1>
+        <select id="playerSelect">
+            <option value="0"></option>
+            <option value="2">. لاعِبَين</option>
+            <option value="3">. ثلاث لاعبين</option>
+            <option value="4">. أربع لاعبين</option>
+            <option value="5">. خمس لاعبين</option>
+            <option value="6">. ستة لاعبين</option>
+        </select>
+    </div>
+
+    <script>
+        document.querySelector('.instagram-link').onclick = function() {
+            window.open('https://www.instagram.com/qfqz__', '_blank');
+            return false;
+        };
+
+        document.getElementById('playerSelect').addEventListener('change', function() {
+            const selectedValue = this.value;
+            if (selectedValue > 0) {
+                window.location.href = `score.html?players=${selectedValue}`;
+            }
+        });
+    </script>
+</body>
+</html>
