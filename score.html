@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Score</title>
+    <link rel="stylesheet" href="../cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@900&amp;display=swap" rel="stylesheet" />
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            background-image: url("bg.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            overflow: hidden;
+            font-family: "Cairo", sans-serif;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 700px;
+            margin: 20px auto;
+            font-size: 16px;
+            color: #ecf0f1;
+            font-family: "Cairo", sans-serif;
+        }
+
+        th, td {
+            padding: 8px;
+            white-space: nowrap;
+            min-width: 100px;
+            text-align: center;
+            border: 7px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background-color: #7024b9;
+        }
+
+        input[type="number"] {
+            border: none;
+            background-color: transparent;
+            color: #ecf0f1;
+            text-align: center;
+            font-size: large;
+            width: 100%;
+            font-family: "Cairo", sans-serif;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+        }
+
+        .reset-button {
+            margin-top: 20px;
+            width: 200px;
+            height: 50px;
+            background-color: rgba(75, 0, 130, 0.8);
+            color: #ecf0f1;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 18px;
+            font-family: "Cairo", sans-serif;
+        }
+
+        .reset-button:hover {
+            background-color: #ecf0f1;
+            color: rgba(75, 0, 130, 0.8);
+        }
+
+        .player-name {
+            background-color: #c51536;
+        }
+
+        .round-name {
+            background-color: #d5ac2d;
+        }
+
+        .score-cell {
+            background-color: #55275d;
+        }
+
+        .round-cell {
+            background-color: #7024b9;
+        }
+
+        .green-score {
+            background-color: #297a0c !important;
+        }
+
+        .total-cell {
+            background-color: #b12255;
+        }
+
+        .lowest-score {
+            background-color: #0e7e55;
+        }
+
+        .other-scores {
+            background-color: #87243d;
+        }
+    </style>
+</head>
+<body>
+    <table id="scoreTable">
+        <thead>
+            <tr id="headerRow"></tr>
+        </thead>
+        <tbody id="scoreBody"></tbody>
+        <tfoot>
+            <tr id="totalRow"></tr>
+        </tfoot>
+    </table>
+
+    <button class="reset-button" onclick="openNewScoreSheet()">إعادة تعيين</button>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const players = parseInt(params.get("players")) || 2;
+
+        const playerNames = [];
+        for (let i = 1; i <= players; i++) {
+            playerNames.push(params.get(`name${i}`) || `Player ${i}`);
+        }
+
+        const scoreBody = document.getElementById("scoreBody");
+        const headerRow = document.getElementById("headerRow");
+        const totalRow = document.getElementById("totalRow");
+
+        function generateTable() {
+            // Generate header row with player names
+            playerNames.forEach(name => {
+                headerRow.innerHTML += `<th class="player-name">${name}</th>`;
+            });
+            headerRow.innerHTML += `<th class="round-name">الجولة</th>`;
+
+            const roundNames = [
+                "الجولة الاولى",
+                "الجولة الثانية",
+                "الجولة الثالثة",
+                "الجولة الرابعة",
+                "الجولة الخامسة"
+            ];
+
+            // Generate rows for 5 rounds
+            for (let i = 0; i < 5; i++) {
+                let row = `<tr>`;
+                for (let j = 1; j <= players; j++) {
+                    row += `<td class="score-cell"><input type="number" class="player${j}" oninput="handleInput(${i}, this)"></td>`;
+                }
+                row += `<td class="round-cell">${roundNames[i]}</td></tr>`;
+                scoreBody.innerHTML += row;
+            }
+
+            // Generate totals row
+            let totalHTML = "";
+            for (let i = 1; i <= players; i++) {
+                totalHTML += `<th class="score-cell" id="total${i}">0</th>`;
+            }
+            totalHTML += `<th class="total-cell">المجموع</th>`;
+            totalRow.innerHTML = totalHTML;
+        }
+
+        function handleInput(rowIndex, inputElement) {
+            const row = scoreBody.querySelectorAll("tr")[rowIndex];
+            const inputs = row.querySelectorAll("input[type='number']");
+            const allFilled = Array.from(inputs).every(input => input.value.trim() !== "");
+
+            // If all inputs in the fifth row are filled, double their values
+            if (rowIndex === 4 && allFilled) {
+                inputs.forEach(input => {
+                    const value = parseFloat(input.value) || 0;
+                    input.value = value * 2;
+
+                    // Highlight cells with a score of 0 in green
+                    if (value === 0) {
+                        input.parentElement.classList.add("green-score");
+                    } else {
+                        input.parentElement.style.backgroundColor = "#55275d"; // Dark Purple
+                    }
+                });
+            }
+            updateTotals();
+        }
+
+        function updateTotals() {
+            const totals = Array(players).fill(0);
+            const rows = document.querySelectorAll("#scoreBody tr");
+
+            rows.forEach(row => {
+                row.querySelectorAll("input[type='number']").forEach((input, idx) => {
+                    const score = parseFloat(input.value) || 0;
+                    totals[idx] += score;
+
+                    // Highlight cells with a score of 0 and ignore empty cells
+                    if (score === 0 && input.value.trim() !== "") {
+                        input.parentElement.style.backgroundColor = "#297a0c"; // Green
+                    } else {
+                        input.parentElement.style.backgroundColor = "#55275d"; // Dark Purple
+                    }
+                });
+            });
+
+            totals.forEach((total, idx) => {
+                document.getElementById(`total${idx + 1}`).textContent = total;
+            });
+
+            // Apply styling to the sum row
+            const sumRow = document.querySelector("#totalRow");
+            const sumCells = Array.from(sumRow.querySelectorAll("th"));
+            const sumValues = sumCells.slice(0, players).map(cell => parseFloat(cell.textContent) || 0);
+
+            const minSumScore = Math.min(...sumValues);
+            sumCells.slice(0, players).forEach((cell, idx) => {
+                const value = sumValues[idx];
+                if (value === minSumScore) {
+                    cell.style.backgroundColor = "#0e7e55"; // Green for lowest score
+                } else {
+                    cell.style.backgroundColor = "#87243d"; // Dark red for other scores
+                }
+            });
+        }
+
+        // Open a new tab with a fresh score sheet
+        function openNewScoreSheet() {
+            const query = new URLSearchParams(params).toString(); // Preserve current query parameters
+            window.open(`score.html?${query}`, '_blank'); // Open in a new tab
+        }
+
+        generateTable();
+    </script>
+</body>
+</html>
+

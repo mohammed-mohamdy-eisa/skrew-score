@@ -6,7 +6,6 @@
     <title>Skrew</title>
     <link rel="stylesheet" href="../cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@900&amp;display=swap" rel="stylesheet">
-
     <style>
         html, body {
             height: 100%;
@@ -95,8 +94,6 @@
     </style>
 </head>
 <body>
-
-    <!-- Navigation Bar -->
     <nav>
         <ul>
             <li><a href="rules.html">القواعد</a></li>
@@ -118,15 +115,15 @@
     </div>
 
     <script>
-        document.querySelector('.instagram-link').onclick = function() {
+        document.querySelector('.instagram-link').onclick = function () {
             window.open('https://www.instagram.com/qfqz__', '_blank');
             return false;
         };
 
-        document.getElementById('playerSelect').addEventListener('change', function() {
+        document.getElementById('playerSelect').addEventListener('change', function () {
             const selectedValue = this.value;
             if (selectedValue > 0) {
-                window.location.href = `score.html?players=${selectedValue}`;
+                window.location.href = `player-names.html?players=${selectedValue}`;
             }
         });
     </script>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Names</title>
+    <link rel="stylesheet" href="../cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@900&amp;display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            background-image: url('bg.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .input-container {
+            text-align: left;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .player-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .player-label {
+            font-family: 'Cairo', sans-serif;
+            font-size: 16px;
+            color: white;
+            width: 80px;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            margin-left: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #883997;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .next-button {
+            margin-top: 20px;
+            width: 200px; /* Matches reset button in score.html */
+            height: 50px; /* Matches reset button in score.html */
+            background-color: rgba(75, 0, 130, 0.8);
+            color: #ecf0f1;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 18px;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .next-button:hover {
+            background-color: #ecf0f1;
+            color: rgba(75, 0, 130, 0.8);
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="input-container" id="inputContainer"></div>
+    <div class="button-container">
+        <button id="nextButton" class="next-button">يالا بينا</button>
+    </div>
+
+    <script>
+        // Get the number of players from the query parameter
+        const params = new URLSearchParams(window.location.search);
+        const numPlayers = parseInt(params.get('players'));
+
+        // Generate input fields and labels for each player
+        const container = document.getElementById('inputContainer');
+        for (let i = 1; i <= numPlayers; i++) {
+            const row = document.createElement('div');
+            row.classList.add('player-row');
+
+            const label = document.createElement('div');
+            label.classList.add('player-label');
+            label.textContent = `Player ${i}`;
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = `Enter name of player ${i}`;
+            input.id = `player${i}`;
+
+            row.appendChild(label);
+            row.appendChild(input);
+            container.appendChild(row);
+        }
+
+        // Redirect to score.html with player names on button click
+        document.getElementById('nextButton').addEventListener('click', () => {
+            let query = `score.html?players=${numPlayers}`;
+            for (let i = 1; i <= numPlayers; i++) {
+                const playerName = document.getElementById(`player${i}`).value;
+                if (playerName) {
+                    query += `&name${i}=${encodeURIComponent(playerName)}`;
+                }
+            }
+            window.location.href = query;
+        });
+    </script>
+</body>
+</html>
